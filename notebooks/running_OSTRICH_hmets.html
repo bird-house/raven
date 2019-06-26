@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Calibrating the HMETS hydrological model using OSTRICH on the Raven server &#8212; Raven 0.1.0 documentation</title>
+    <title>Calibrating the HMETS hydrological model using OSTRICH on the Raven server &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -15,6 +15,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Calibrating the GR4J-Cemaneige hydrological model using OSTRICH on the Raven server" href="running_OSTRICH_gr4jcn.html" />
+    <link rel="prev" title="Calling HMETS on the Raven server" href="Perform_Regionalization.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -244,7 +246,7 @@ div.rendered_html tbody tr:hover {
 <h1>Calibrating the HMETS hydrological model using OSTRICH on the Raven server<a class="headerlink" href="#Calibrating-the-HMETS-hydrological-model-using-OSTRICH-on-the-Raven-server" title="Permalink to this headline">¶</a></h1>
 <p>Here we use birdy’s WPS client to calibrate the HMETS hydrological model on the server and analyze the calibrated parameter set and hydrograph.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -263,7 +265,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -296,17 +298,17 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># And get the response</span>
 <span class="c1"># With `asobj` set to False, only the reference to the output is returned in the response.</span>
 <span class="c1"># Setting `asobj` to True will retrieve the actual files and copy the locally.</span>
-<span class="p">[</span><span class="n">calibration</span><span class="p">,</span> <span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[</span><span class="n">calibration</span><span class="p">,</span> <span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">,</span> <span class="n">calibparams</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Since we requested output objects, we can simply access the output objects. The dianostics is just a CSV file:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">diagnostics</span><span class="p">)</span>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">calibparams</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -315,14 +317,12 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-observed data series,filename,DIAG_NASH_SUTCLIFFE,DIAG_RMSE,
-HYDROGRAPH,./model//Salmon-River-Near-Prince-George_meteo_daily.nc,-0.686583,67.2876,
-
+8.169969, 1.883622, 1.406962, 0.9496962, 2.446989, 20.60178, 1.277498, 0.1869156, 0.03827195, 0.2872266, 0.08469695, -3.001381, 0.4365697, 0.01709443, 0.8111447, 0.0609922, 0.01022587, 0.02257867, 0.0004118582, 319.1083, 1158.064
 </pre></div></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">hydrograph</span></code> and <code class="docutils literal notranslate"><span class="pre">storage</span></code> outputs are netCDF files storing the time series. These files are opened by default using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, which provides convenient and powerful time series analysis and plotting tools.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -331,20 +331,20 @@ HYDROGRAPH,./model//Salmon-River-Near-Prince-George_meteo_daily.nc,-0.686583,67.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
 <span></span>&lt;xarray.DataArray &#39;q_sim&#39; (time: 209, nbasins: 1)&gt;
 array([[  0.      ],
-       [317.767047],
-       [602.685996],
+       [ 94.498552],
+       [186.123758],
        ...,
-       [ 16.700328],
-       [ 55.739867],
-       [101.356578]])
+       [ 76.266223],
+       [ 86.174641],
+       [ 98.635875]])
 Coordinates:
-  * time        (time) datetime64[ns] 1954-01-01 1954-01-02 1954-01-03 ...
+  * time        (time) datetime64[ns] 1954-01-01 1954-01-02 ... 1954-07-28
     basin_name  (nbasins) object ...
 Dimensions without coordinates: nbasins
 Attributes:
@@ -354,7 +354,7 @@ Attributes:
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -363,11 +363,24 @@ Attributes:
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ets/miniconda3/lib/python3.7/site-packages/pandas/plotting/_converter.py:129: FutureWarning: Using an implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+        &gt;&gt;&gt; from pandas.plotting import register_matplotlib_converters
+        &gt;&gt;&gt; register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7faf9b796710&gt;]
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7f4a3df18898&gt;]
 </pre></div>
 </div>
 </div>
@@ -375,11 +388,11 @@ Attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_running_OSTRICH_hmets_8_1.png" src="../_images/notebooks_running_OSTRICH_hmets_8_1.png" />
+<img alt="../_images/notebooks_running_OSTRICH_hmets_8_2.png" src="../_images/notebooks_running_OSTRICH_hmets_8_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -389,21 +402,92 @@ Attributes:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Max:  &lt;xarray.DataArray &#39;q_sim&#39; ()&gt;
-array(602.685996)
+array(186.123758)
 Mean:  &lt;xarray.DataArray &#39;q_sim&#39; ()&gt;
-array(71.840511)
+array(79.536323)
 Monthly means:  &lt;xarray.DataArray &#39;q_sim&#39; (month: 7)&gt;
-array([190.565714,  60.216904,   5.036852,   9.51106 , 139.359067,  48.586079,
-        42.923882])
+array([120.879662,  83.433483,  46.620151,  73.231489,  71.210834,  76.539737,
+        85.492398])
 Coordinates:
   * month    (month) int64 1 2 3 4 5 6 7
 </pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ets/miniconda3/lib/python3.7/site-packages/xarray/core/groupby.py:639: FutureWarning: Default reduction dimension will be changed to the grouped dimension in a future version of xarray. To silence this warning, pass dim=xarray.ALL_DIMS explicitly.
+  skipna=skipna, allow_lazy=True, **kwargs)
+</pre></div></div>
+</div>
+<div class="section" id="Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same.">
+<h2>Now, let’s do a test: Let’s run the model again using the same parameters and check to see that the NSE is the same.<a class="headerlink" href="#Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same." title="Permalink to this headline">¶</a></h2>
+<p>First, lets extract the diagnostics from the optimized run, giving the calibration NSE.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">diagnostics</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;observed data series,filename,DIAG_NASH_SUTCLIFFE,DIAG_RMSE,\nHYDROGRAPH,/tmp/pywps_process_qospwuq2/Salmon-River-Near-Prince-George_meteo_daily.nc,-1.10855,75.2356,\n&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Run-the-HMETS-WPS:">
+<h2>Run the HMETS WPS:<a class="headerlink" href="#Run-the-HMETS-WPS:" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Model configuration parameters</span>
+<span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">area</span><span class="o">=</span><span class="mf">4250.6</span><span class="p">,</span>
+    <span class="n">elevation</span><span class="o">=</span><span class="mf">843.0</span><span class="p">,</span>
+    <span class="n">latitude</span><span class="o">=</span><span class="mf">54.4848</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="o">=-</span><span class="mf">123.3659</span><span class="p">,</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1954</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">duration</span><span class="o">=</span><span class="mi">208</span><span class="p">,</span>
+             <span class="p">)</span>
+<span class="c1"># Let&#39;s call the model with the timeseries, model parameters and other configuration parameters</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">raven_hmets</span><span class="p">(</span><span class="n">ts</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span> <span class="n">params</span><span class="o">=</span><span class="n">calibparams</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
+<span class="p">[</span><span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics2</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>Now lets check to see if the diagnostics are the same.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">diagnostics2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;observed data series,filename,DIAG_NASH_SUTCLIFFE,DIAG_RMSE,\nHYDROGRAPH,/tmp/pywps_process_qjztwen3/Salmon-River-Near-Prince-George_meteo_daily.nc,-1.10833,75.2317,\n&#39;
+</pre></div>
+</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
@@ -412,6 +496,7 @@ Coordinates:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -436,20 +521,26 @@ Coordinates:
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
+</ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Notebooks</a><ul>
+      <li>Previous: <a href="Perform_Regionalization.html" title="previous chapter">Calling HMETS on the Raven server</a></li>
+      <li>Next: <a href="running_OSTRICH_gr4jcn.html" title="next chapter">Calibrating the GR4J-Cemaneige hydrological model using OSTRICH on the Raven server</a></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Complete workflow to get info from GIS tools for hydrological modelling &#8212; Raven 0.1.0 documentation</title>
+    <title>Geographical analysis for hydrological modelling &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Analyzing time series" href="Time series analysis.html" />
-    <link rel="prev" title="Calibrating the HMETS hydrological model using OSTRICH on the Raven server" href="running_OSTRICH_hmets.html" />
+    <link rel="prev" title="Computing Objective Functions on the Raven server" href="computing_objective_functions.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -233,9 +233,10 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Complete-workflow-to-get-info-from-GIS-tools-for-hydrological-modelling">
-<h1>Complete workflow to get info from GIS tools for hydrological modelling<a class="headerlink" href="#Complete-workflow-to-get-info-from-GIS-tools-for-hydrological-modelling" title="Permalink to this headline">¶</a></h1>
-<p>Here we use birdy’s WPS client to perform a catchment delineation, use the delineation to extract physical properties and prepare data for hydrological modelling, all using the Raven server.</p>
+<div class="section" id="Geographical-analysis-for-hydrological-modelling">
+<h1>Geographical analysis for hydrological modelling<a class="headerlink" href="#Geographical-analysis-for-hydrological-modelling" title="Permalink to this headline">¶</a></h1>
+<p>This notebook shows how to delineate a catchment and extract properties from a digital elevation model (DEM) and a land-use data set. The processes are hosted on the Raven server, which in the background connects to a GeoServer instance to query watershed contours, DEM and land-use data.</p>
+<p>We connect to Raven’s Web Processing Service interface using birdy’s <code class="docutils literal notranslate"><span class="pre">WPSClient</span></code>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -243,25 +244,25 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">birdy</span> <span class="k">import</span> <span class="n">WPSClient</span>
 
-<span class="kn">from</span> <span class="nn">example_data</span> <span class="k">import</span> <span class="n">TESTDATA</span>
-<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
-<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlretrieve</span>
-<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">descartes</span> <span class="k">import</span> <span class="n">PolygonPatch</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:9099/wps&quot;</span>
 <span class="n">wps</span> <span class="o">=</span> <span class="n">WPSClient</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<p>We first extract the watershed contour for the point of interest. The process looks into the HydroSheds databast to finds the watershed enclosing the given location. The <code class="docutils literal notranslate"><span class="pre">location</span></code> parameter identifies the outlet of the watershed, and <code class="docutils literal notranslate"><span class="pre">aggregate_upstream</span></code> determines whether or not we want the service to return the union of all upstream basins. Here we set it to <code class="docutils literal notranslate"><span class="pre">False</span></code> to reduce the size of the basin and speed-up computations.</p>
+<p>The output of the <code class="docutils literal notranslate"><span class="pre">hydrosheds-select</span></code> process is a GeoJSON geometry.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># MANIC: lonlat_coordinate=&quot;(-68.724444, 50.646667)&quot;</span>
-<span class="n">r_select</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">shape_selection</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;-75.724444, 44.646667&quot;</span><span class="p">,</span><span class="n">lakes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">aggregate_upstream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1"># St-Lawrence I guess is &quot;-75.724444, 44.646667&quot;?  Returns 770 000 sq.km basin...</span>
+<span class="n">r_select</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">hydrosheds_select</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="s2">&quot;-71.291660, 50.492758&quot;</span><span class="p">,</span> <span class="n">aggregate_upstream</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -269,36 +270,43 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f479ebadab524698bef8f0c847550ca4", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "84f27d6e5c7c4aee8218a1efc1741fc0", "version_major": 2, "version_minor": 0}</script></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">location</span></code> parameter identifies the outlet of the watershed, and <code class="docutils literal notranslate"><span class="pre">aggregate_upstream</span></code> determines whether or not we want the service to return all upstream basins.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Get JSON Polygons of the delineated catchment</span>
-<span class="p">[</span><span class="n">features</span><span class="p">,</span> <span class="n">upstream_basins</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_select</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">feature</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># TODO: Fix this server-side</span>
-</pre></div>
-</div>
-</div>
-<p>Now that we have delineated a catchment, lets find the zonal statistics and other properties of the catchment.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">descartes</span> <span class="k">import</span> <span class="n">PolygonPatch</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span></span><span class="c1"># Get the links to the files on the server</span>
+<span class="p">[</span><span class="n">feature_url</span><span class="p">,</span> <span class="n">upstream_basins_url</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_select</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-<span class="n">BLUE</span> <span class="o">=</span> <span class="s1">&#39;#6699cc&#39;</span>
+<span class="c1"># Get GeoJSON polygon of the delineated catchment.</span>
+<span class="p">[</span><span class="n">feature</span><span class="p">,</span> <span class="n">upstream_basins</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_select</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">feature</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&quot;geometry&quot;: {&quot;coordinates&quot;: [[[[-71.3592, 50.4196], [-71.3621, 50.4226], [-71.3625, 50.425], [-71.3629, 50.4358], [-71.3705, 50.4434], [-71.3712, 50.4566], [-71.3746, 50.4601], [-71.3754, 50.4642], [-71.3712, 50.4684], [-71.3705, 50.4733], [-71.367, 50.4767], [-71.3663, 50.4983], [-71.3629, 50.5017], [-71.3621, 50.5108], [-71.3587, 50.5142], [-71.3583, 50.5208], [-71.3561, 50.5203], [-71.348, 50.5131], [-71.3436, 50.5119], [-71.3382, 50.5078], [-71.3353, 50.5089], [-71.3299, 50.5131], [-71.3257, 50.5114], [-71.3243, 50.5009], [-71.3186, 50.4994], [-71.3146, 50.4963], [-71.3105, 50.4994], [-71.3061, 50.5006], [-71.2927, 50.5131], [-71.2883, 50.5115], [-71.2869, 50.5061], [-71.2839, 50.5022], [-71.2833, 50.4958], [-71.2833, 50.4917], [-71.2875, 50.4917], [-71.298, 50.4911], [-71.302, 50.4881], [-71.3105, 50.4869], [-71.3199, 50.4786], [-71.3214, 50.4728], [-71.3306, 50.4632], [-71.3366, 50.4609], [-71.3491, 50.4533], [-71.3488, 50.4529], [-71.3472, 50.4513], [-71.3461, 50.4439], [-71.3479, 50.4291], [-71.3535, 50.4237], [-71.3592, 50.4196]]]], &quot;type&quot;: &quot;MultiPolygon&quot;}, &quot;id&quot;: &quot;96929&quot;, &quot;properties&quot;: {&quot;COAST&quot;: 0, &quot;DIST_MAIN&quot;: 490.9, &quot;DIST_SINK&quot;: 490.9, &quot;ENDO&quot;: 0, &quot;HYBAS_ID&quot;: 7120270182, &quot;LAKE&quot;: 0, &quot;MAIN_BAS&quot;: 7120034330, &quot;NEXT_DOWN&quot;: 7120270181, &quot;NEXT_SINK&quot;: 7120034330, &quot;ORDER&quot;: 1, &quot;PFAF_ID&quot;: 724089370000, &quot;SIDE&quot;: &quot;R&quot;, &quot;SORT&quot;: 96929, &quot;SUB_AREA&quot;: 29.0, &quot;UP_AREA&quot;: 9419.6, &quot;gml_id&quot;: &quot;USGS_HydroBASINS_lake_na_lev12.96929&quot;}, &quot;type&quot;: &quot;Feature&quot;}
+</pre></div>
+</div>
+</div>
+<p>We can now plot the outline of the watershed using the <code class="docutils literal notranslate"><span class="pre">descartes</span></code> package and <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">BLUE</span> <span class="o">=</span> <span class="s1">&#39;#6699cc&#39;</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">PolygonPatch</span><span class="p">(</span><span class="n">feature</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">],</span> <span class="n">fc</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="n">BLUE</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">2</span> <span class="p">))</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;scaled&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
 </pre></div>
 </div>
 </div>
@@ -309,8 +317,9 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/notebooks_Delineation_workflow_6_0.png" src="../_images/notebooks_Delineation_workflow_6_0.png" />
 </div>
 </div>
+<p>Now that we have delineated a catchment, lets find the zonal statistics and other properties of the catchment.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -318,8 +327,7 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># computing watershed properties.</span>
 <span class="c1">#crs=4326</span>
 <span class="c1">#projected_crs=32198</span>
-<span class="p">[</span><span class="n">features</span><span class="p">,</span> <span class="n">upstream_basins</span><span class="p">]</span> <span class="o">=</span> <span class="n">r_select</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">shape_properties</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">features</span><span class="p">)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">shape_properties</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">feature_url</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -327,15 +335,246 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f33b09848bd446c5bb9269cf6f86eca3", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9b38407bb3694259975c8b85f7e8b563", "version_major": 2, "version_minor": 0}</script></div>
 </div>
+<p>Now, let’s extract the data from the WPS service response:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="p">[</span><span class="n">properties</span><span class="p">]</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+<span></span><span class="p">[</span><span class="n">properties</span><span class="p">,</span> <span class="p">]</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+
+<span class="n">area</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;area&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1000000.0</span>
+<span class="n">longitude</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;centroid&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">latitude</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;centroid&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">gravelius</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;gravelius&#39;</span><span class="p">]</span>
+<span class="n">perimeter</span> <span class="o">=</span> <span class="n">prop</span><span class="p">[</span><span class="s1">&#39;perimeter&#39;</span><span class="p">]</span>
+
+<span class="n">shapeProperties</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;area&#39;</span><span class="p">:</span><span class="n">area</span><span class="p">,</span> <span class="s1">&#39;longitude&#39;</span><span class="p">:</span><span class="n">longitude</span><span class="p">,</span> <span class="s1">&#39;latitude&#39;</span><span class="p">:</span><span class="n">latitude</span><span class="p">,</span> <span class="s1">&#39;gravelius&#39;</span><span class="p">:</span><span class="n">gravelius</span><span class="p">,</span> <span class="s1">&#39;perimeter&#39;</span><span class="p">:</span><span class="n">perimeter</span><span class="p">}</span>
+<span class="n">shapeProperties</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{&#39;id&#39;: &#39;96929&#39;, &#39;gml_id&#39;: &#39;USGS_HydroBASINS_lake_na_lev12.96929&#39;, &#39;HYBAS_ID&#39;: 7120270182, &#39;NEXT_DOWN&#39;: 7120270181, &#39;NEXT_SINK&#39;: 7120034330, &#39;MAIN_BAS&#39;: 7120034330, &#39;DIST_SINK&#39;: 490.9, &#39;DIST_MAIN&#39;: 490.9, &#39;SUB_AREA&#39;: 29.0, &#39;UP_AREA&#39;: 9419.6, &#39;PFAF_ID&#39;: 724089370000, &#39;SIDE&#39;: &#39;R&#39;, &#39;LAKE&#39;: 0, &#39;ENDO&#39;: 0, &#39;COAST&#39;: 0, &#39;ORDER&#39;: 1, &#39;SORT&#39;: 96929, &#39;area&#39;: 28764849.46504176, &#39;centroid&#39;: [-71.3409808346398, 50.478880424555875], &#39;perimeter&#39;: 33017.42666655582, &#39;gravelius&#39;: 1.7366297521025682}
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;area&#39;: 28.76484946504176,
+ &#39;longitude&#39;: -71.3409808346398,
+ &#39;latitude&#39;: 50.478880424555875,
+ &#39;gravelius&#39;: 1.7366297521025682,
+ &#39;perimeter&#39;: 33017.42666655582}
+</pre></div>
+</div>
+</div>
+<p>Note that these properties are a mix of the properties of the original file where the shape is stored, and properties computed by the process (area, centroid, perimeter and gravelius). Note also that the computed area is in m², while the “SUB_AREA” property is in km², and that there are slight differences between the two values.</p>
+<p>Now we’ll extract the land-use properties of the watershed. We pass the link to the watershed outline to a process using in the background the <a class="reference external" href="http://www.cec.org/tools-and-resources/north-american-environmental-atlas/north-american-land-change-monitoring-system">North American Land Change Monitoring System</a> dataset, and retrieve properties over the region.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Use the geoserver to extract the land cover over the appropriate bounding box (automatic)</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">nalcms_zonal_stats</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">feature_url</span><span class="p">,</span> <span class="n">select_all_touching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">simple_categories</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b5e01c2f022942fca174987b853ed559", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">(</span><span class="n">statistics</span><span class="p">,</span> <span class="p">)</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">statistics</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;type&#39;: &#39;FeatureCollection&#39;,
+ &#39;features&#39;: [{&#39;type&#39;: &#39;Feature&#39;,
+   &#39;id&#39;: &#39;0&#39;,
+   &#39;properties&#39;: {&#39;id&#39;: &#39;96929&#39;,
+    &#39;gml_id&#39;: &#39;USGS_HydroBASINS_lake_na_lev12.96929&#39;,
+    &#39;HYBAS_ID&#39;: 7120270182,
+    &#39;NEXT_DOWN&#39;: 7120270181,
+    &#39;NEXT_SINK&#39;: 7120034330,
+    &#39;MAIN_BAS&#39;: 7120034330,
+    &#39;DIST_SINK&#39;: 490.9,
+    &#39;DIST_MAIN&#39;: 490.9,
+    &#39;SUB_AREA&#39;: 29.0,
+    &#39;UP_AREA&#39;: 9419.6,
+    &#39;PFAF_ID&#39;: 724089370000,
+    &#39;SIDE&#39;: &#39;R&#39;,
+    &#39;LAKE&#39;: 0,
+    &#39;ENDO&#39;: 0,
+    &#39;COAST&#39;: 0,
+    &#39;ORDER&#39;: 1,
+    &#39;SORT&#39;: 96929,
+    &#39;count&#39;: 33068,
+    &#39;nodata&#39;: 8.0,
+    &#39;nan&#39;: 0,
+    &#39;land-use&#39;: {&#39;Forest&#39;: 19081,
+     &#39;Shrubs&#39;: 10239,
+     &#39;Grass&#39;: 479,
+     &#39;Wetland&#39;: 21,
+     &#39;Crops&#39;: 0,
+     &#39;Urban&#39;: 0,
+     &#39;Water&#39;: 3248,
+     &#39;SnowIce&#39;: 0}},
+   &#39;geometry&#39;: {&#39;type&#39;: &#39;MultiPolygon&#39;,
+    &#39;coordinates&#39;: [[[[1981874.096748117, 967399.0911914052],
+       [1981560.4971648867, 967640.7996158176],
+       [1981434.9369879127, 967882.7807668581],
+       [1980961.2637742816, 969007.1294172165],
+       [1980150.4532387636, 969613.136897321],
+       [1979557.7882538023, 970982.0066178304],
+       [1979190.993435453, 971263.6623110471],
+       [1978968.9179589564, 971674.108712833],
+       [1979068.7370289837, 972221.4986643237],
+       [1978911.2766435912, 972753.8972656073],
+       [1978998.5184324386, 973199.5400577396],
+       [1978148.5360125287, 975486.0006584836],
+       [1978229.0726735129, 975929.0688304713],
+       [1977903.7424964204, 976905.0670857691],
+       [1977984.1732537195, 977348.1154956503],
+       [1977736.39888101, 978051.40082158],
+       [1977900.4252855848, 978054.5035027583],
+       [1978726.7671066807, 977503.1475924414],
+       [1979063.162155457, 977488.4102143587],
+       [1979585.086480826, 977194.4381107079],
+       [1979728.31449522, 977383.3356572706],
+       [1979905.6264661902, 977961.0506469918],
+       [1980249.760065988, 977888.8221596053],
+       [1980777.0205245588, 976821.6140084906],
+       [1981210.6254241262, 976808.4123675763],
+       [1981599.9652658133, 976584.1723129161],
+       [1981738.2557495865, 977013.5474293529],
+       [1981974.993178329, 977251.010851383],
+       [1982328.0510653253, 978903.0377999832],
+       [1982681.0729708741, 978846.538718968],
+       [1982996.7907913027, 978315.0344648779],
+       [1983354.3364343601, 977981.5895128745],
+       [1983659.5600711212, 977324.8163370308],
+       [1983830.0521372445, 976894.3229222285],
+       [1983556.471153514, 976787.8376635303],
+       [1982897.423789108, 976458.6876778962],
+       [1982761.5084731434, 976042.3007405908],
+       [1982257.5670965123, 975700.9204296736],
+       [1981989.7596723628, 974591.1839045994],
+       [1982132.8261994827, 973944.0859803229],
+       [1981931.5999756719, 972702.8546073242],
+       [1981635.8450955295, 972309.3457865227],
+       [1981135.976983787, 971194.6244946554],
+       [1981172.1313644364, 971160.2056112073],
+       [1981342.8394163426, 971032.6586613981],
+       [1981721.483719015, 970283.2595854887],
+       [1982217.756235964, 968683.1417384447],
+       [1982076.182758441, 967974.1057193918],
+       [1981874.096748117, 967399.0911914052]]]]}}]}
+</pre></div>
+</div>
+</div>
+<p>We now have the statistics from the NALCMS zonal_stats toolbox regarding the land use, from which we calculate the ratio of each land-use component.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lu</span> <span class="o">=</span> <span class="n">statistics</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="s1">&#39;land-use&#39;</span><span class="p">]</span>
+<span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">lu</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<span class="n">landUse</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">/</span> <span class="n">total</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">lu</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">landUse</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>{&#39;Forest&#39;: 0.5770231039071005,
+ &#39;Shrubs&#39;: 0.3096346921495101,
+ &#39;Grass&#39;: 0.014485303011975323,
+ &#39;Wetland&#39;: 0.0006350550381033022,
+ &#39;Crops&#39;: 0.0,
+ &#39;Urban&#39;: 0.0,
+ &#39;Water&#39;: 0.09822184589331075,
+ &#39;SnowIce&#39;: 0.0}
+</pre></div>
+</div>
+</div>
+<p>The next step will be to collect terrain data, such as elevation, slope and aspect. We will do this using the Terrain_Analysis WPS service:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">resp</span><span class="o">=</span><span class="n">wps</span><span class="o">.</span><span class="n">terrain_analysis</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">feature_url</span><span class="p">,</span> <span class="n">select_all_touching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">projected_crs</span><span class="o">=</span><span class="mi">3978</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f1085e4b8ad141d590ad3dd99583bc74", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<p>Now let’s extract the properties from the WPS response. Use asobj=True to have Birdy preprocess the data and return the data directly.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="p">[</span><span class="n">properties</span><span class="p">,</span> <span class="n">dem</span><span class="p">]</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">elevation</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span>
+<span class="n">slope</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span>
+<span class="n">aspect</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;aspect&#39;</span><span class="p">]</span>
+
+<span class="n">terrain_data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;elevation&#39;</span><span class="p">:</span><span class="n">elevation</span><span class="p">,</span> <span class="s1">&#39;slope&#39;</span><span class="p">:</span><span class="n">slope</span><span class="p">,</span><span class="s1">&#39;aspect&#39;</span><span class="p">:</span><span class="n">aspect</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/david/src/birdy/birdy/client/converters.py:287: UserWarning: No converter was found for dem
+  warnings.warn(UserWarning(&#34;No converter was found for {}&#34;.format(output.identifier)))
+</pre></div></div>
+</div>
+<p>Finally, display all the extracted parameters for the user:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">all_properties</span><span class="o">=</span><span class="p">{</span><span class="o">**</span><span class="n">shapeProperties</span><span class="p">,</span> <span class="o">**</span><span class="n">landUse</span><span class="p">,</span> <span class="o">**</span><span class="n">terrain_data</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">all_properties</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -344,21 +583,27 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[{&#39;id&#39;: &#39;7120034520&#39;, &#39;COAST&#39;: 0, &#39;DIST_MAIN&#39;: 500.1, &#39;DIST_SINK&#39;: 500.1, &#39;ENDO&#39;: 0, &#39;HYBAS_ID&#39;: 7121021261, &#39;LAKE&#39;: 1209, &#39;NEXT_DOWN&#39;: 7120421412, &#39;NEXT_SINK&#39;: 7120034520, &#39;ORDER&#39;: 1, &#39;PFAF_ID&#39;: 725510701200, &#39;SIDE&#39;: &#39;L&#39;, &#39;SORT&#39;: 99271, &#39;SUB_AREA&#39;: 766237.7, &#39;UP_AREA&#39;: 766270.4, &#39;area&#39;: 772095248092.3353, &#39;centroid&#39;: [-84.31996604288439, 45.16993914390546], &#39;perimeter&#39;: 9807568.183716247, &#39;gravelius&#39;: 3.148625180402048}]
+{&#39;area&#39;: 28.76484946504176, &#39;longitude&#39;: -71.3409808346398, &#39;latitude&#39;: 50.478880424555875, &#39;gravelius&#39;: 1.7366297521025682, &#39;perimeter&#39;: 33017.42666655582, &#39;Forest&#39;: 0.5770231039071005, &#39;Shrubs&#39;: 0.3096346921495101, &#39;Grass&#39;: 0.014485303011975323, &#39;Wetland&#39;: 0.0006350550381033022, &#39;Crops&#39;: 0.0, &#39;Urban&#39;: 0.0, &#39;Water&#39;: 0.09822184589331075, &#39;SnowIce&#39;: 0.0, &#39;elevation&#39;: 490.04395604395603, &#39;slope&#39;: 3.9660612485567572, &#39;aspect&#39;: 116.79663053081183}
 </pre></div></div>
 </div>
-<p>Note that these properties are a mix of the properties of the original file where the shape is stored, and properties computed by the process (area, centroid, perimeter and gravelius). Note also that the computed area is in m², while the “SUB_AREA” property is in km², and that there are differences between the two values.</p>
-<div class="section" id="Now,-Let's-extract-Zonal-Stats.-Again,-can't-use-the-asobj=true,-so-we-use-False-and-then-I-am-stuck-with-the-problem-that-the-results-are-behind-a-link-I-can't-seem-to-access.">
-<h2>Now, Let’s extract Zonal Stats. Again, can’t use the asobj=true, so we use False and then I am stuck with the problem that the results are behind a link I can’t seem to access.<a class="headerlink" href="#Now,-Let's-extract-Zonal-Stats.-Again,-can't-use-the-asobj=true,-so-we-use-False-and-then-I-am-stuck-with-the-problem-that-the-results-are-behind-a-link-I-can't-seem-to-access." title="Permalink to this headline">¶</a></h2>
-<p>Yeah, same problem server-side…</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># This should be a GeoServer link to the full raster</span>
-<span class="n">raster</span><span class="o">=</span><span class="n">TESTDATA</span><span class="p">[</span><span class="s1">&#39;earthenv_dem_90m&#39;</span><span class="p">]</span>
-<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">raster</span><span class="p">),</span> <span class="n">select_all_touching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_geojson</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span></span><span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">rasterio</span>
+<span class="kn">from</span> <span class="nn">rasterio.plot</span> <span class="k">import</span> <span class="n">show</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+    <span class="n">crs</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">epsg</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_epsg</span><span class="p">())</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="n">dem</span><span class="p">)</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Elevation&#39;</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">da</span><span class="o">!=-</span><span class="mi">32768</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -366,50 +611,11 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "e6ed936cd98b4ed4aacf9ad0708ecdc8", "version_major": 2, "version_minor": 0}</script></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">statistics</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
+<img alt="../_images/notebooks_Delineation_workflow_22_0.png" src="../_images/notebooks_Delineation_workflow_22_0.png" />
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">statistics</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>zonal_statsResponse(
-    statistics=[{&#39;count&#39;: 0, &#39;min&#39;: None, &#39;max&#39;: None, &#39;mean&#39;: None, &#39;median&#39;: None, &#39;sum&#39;: None, &#39;nodata&#39;: 126749249.0}]
-)
-</pre></div>
-</div>
-</div>
-<p>This does not work because the test DEM does not cover the basin of interest. Here we need to go back to the process and set as a default DEM the North American DEM Trevor uploaded to Geoserver. On my list.</p>
-</div>
-</div>
-<div class="section" id="NEED-TO-ADD-LAND-COVER-AND-SLOPE-EXTRACTIONS,-BUT-THIS-IS-A-GOOD-START!">
-<h1>NEED TO ADD LAND COVER AND SLOPE EXTRACTIONS, BUT THIS IS A GOOD START!<a class="headerlink" href="#NEED-TO-ADD-LAND-COVER-AND-SLOPE-EXTRACTIONS,-BUT-THIS-IS-A-GOOD-START!" title="Permalink to this headline">¶</a></h1>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
+<div class="section" id="There-we-go!-We-have-extracted-the-contours-of-a-watershed-along-with-a-series-of-hydrologically-relevant-properties,-all-from-the-coordinates-of-a-single-location-(outlet)!">
+<h2>There we go! We have extracted the contours of a watershed along with a series of hydrologically relevant properties, all from the coordinates of a single location (outlet)!<a class="headerlink" href="#There-we-go!-We-have-extracted-the-contours-of-a-watershed-along-with-a-series-of-hydrologically-relevant-properties,-all-from-the-coordinates-of-a-single-location-(outlet)!" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -433,14 +639,16 @@ div.rendered_html tbody tr:hover {
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
 </ul>
 
 <div class="relations">
@@ -448,7 +656,7 @@ div.rendered_html tbody tr:hover {
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
   <li><a href="index.html">Notebooks</a><ul>
-      <li>Previous: <a href="running_OSTRICH_hmets.html" title="previous chapter">Calibrating the HMETS hydrological model using OSTRICH on the Raven server</a></li>
+      <li>Previous: <a href="computing_objective_functions.html" title="previous chapter">Computing Objective Functions on the Raven server</a></li>
       <li>Next: <a href="Time series analysis.html" title="next chapter">Analyzing time series</a></li>
   </ul></li>
   </ul></li>

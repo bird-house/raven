@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Computing Objective Functions on the Raven server &#8212; Raven 0.1.0 documentation</title>
+    <title>Computing Objective Functions on the Raven server &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -15,6 +15,8 @@
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Geographical analysis for hydrological modelling" href="Delineation_workflow.html" />
+    <link rel="prev" title="Running a multi-member hydrological ensemble on the Raven Server" href="Run_Raven_with_Parallel_parameters.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -235,7 +237,7 @@ div.rendered_html tbody tr:hover {
 <h1>Computing Objective Functions on the Raven server<a class="headerlink" href="#Computing-Objective-Functions-on-the-Raven-server" title="Permalink to this headline">¶</a></h1>
 <p>Here we use birdy’s WPS client to compare simulated and observed discharge using various objective functions on the server.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -258,7 +260,7 @@ div.rendered_html tbody tr:hover {
 <h1>First, Run GR4JCN to generate a NetCDF file containing ‘q_obs’ and ‘q_sim’.<a class="headerlink" href="#First,-Run-GR4JCN-to-generate-a-NetCDF-file-containing-'q_obs'-and-'q_sim'." title="Permalink to this headline">¶</a></h1>
 <p>This file contains ‘q_obs’ from the initial dataset, plus the simulated discharge ‘q_sim’ from the model.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -291,7 +293,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Now we can call the objective function WPS service on the Raven Server and collect the results using ‘asobj=True’ to collect the actual results in a dict format.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -302,7 +304,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Let’s see the results!</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -315,12 +317,12 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;agreementindex&#39;: 0.4101473235671874, &#39;bias&#39;: 16.714572745371907, &#39;correlationcoefficient&#39;: 0.29808341759679685, &#39;covariance&#39;: 95.60942322512605, &#39;decomposed_mse&#39;: 1456.9251620291332, &#39;kge&#39;: -0.18901069937022497, &#39;log_p&#39;: -93.9590477440829, &#39;lognashsutcliffe&#39;: -1.768327662096807, &#39;mae&#39;: 20.36859544677684, &#39;mse&#39;: 1456.9251620291332, &#39;nashsutcliffe&#39;: -0.13031833498892342, &#39;pbias&#39;: -59.73471023716637, &#39;rmse&#39;: 38.16968904810639, &#39;rrmse&#39;: 1.364112232999017, &#39;rsquared&#39;: 0.08885372384618638, &#39;rsr&#39;: 1.0631643029132065, &#39;volume_error&#39;: -0.5973471023716637}
+{&#39;agreementindex&#39;: 0.45966283668779995, &#39;bias&#39;: 3.264415081640664, &#39;correlationcoefficient&#39;: 0.20692429156109987, &#39;covariance&#39;: 126.58541245493183, &#39;decomposed_mse&#39;: 1336.7774546759213, &#39;kge&#39;: 0.04155565323313137, &#39;log_p&#39;: -86.28634354147955, &#39;lognashsutcliffe&#39;: -1.7249359886326232, &#39;mae&#39;: 24.444255591828355, &#39;mse&#39;: 1336.7774546759213, &#39;nashsutcliffe&#39;: -0.037104791790125935, &#39;pbias&#39;: -11.66639985156869, &#39;rmse&#39;: 36.56196732502124, &#39;rrmse&#39;: 1.3066553103881289, &#39;rsquared&#39;: 0.042817662438063064, &#39;rsr&#39;: 1.0183834208146387, &#39;volume_error&#39;: -0.11666399851568689}
 </pre></div></div>
 </div>
 <p>There are 17 objective functions. We can also call the WPS server with any one of those objective functions:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -335,8 +337,72 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{&#39;agreementindex&#39;: 0.4101473235671874}
+{&#39;agreementindex&#39;: 0.45966283668779995}
 </pre></div></div>
+</div>
+</div>
+<div class="section" id="Now-that-we-have-numerical-values-for-the-goodness-of-fit,-let's-perform-a-visual-inspection.">
+<h1>Now that we have numerical values for the goodness-of-fit, let’s perform a visual inspection.<a class="headerlink" href="#Now-that-we-have-numerical-values-for-the-goodness-of-fit,-let's-perform-a-visual-inspection." title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[64]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Rerun the model but this time get the object (asobj=True)</span>
+<span class="n">resp2</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">raven_gr4j_cemaneige</span><span class="p">(</span><span class="n">ts</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span> <span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
+<span class="p">[</span><span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[65]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Call the objective function graphing wps while sending the hydrograph as input, which includes &#39;q_sim&#39; and &#39;q_obs&#39;</span>
+<span class="n">resp3</span><span class="o">=</span><span class="n">wps</span><span class="o">.</span><span class="n">graph_objective_function_fit</span><span class="p">(</span><span class="n">sims</span><span class="o">=</span><span class="n">hydrograph</span><span class="p">)</span>
+<span class="p">[</span><span class="n">graph_objfun_fit</span><span class="p">,</span> <span class="n">graph_objfun_annual_fit</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp3</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<p>Now that we have run the graphing service, display the plots</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Graph of full time series</span>
+<span class="n">graph_objfun_fit</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[66]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_computing_objective_functions_14_0.png" src="../_images/notebooks_computing_objective_functions_14_0.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Graph of average annual hydrograph</span>
+<span class="n">graph_objfun_annual_fit</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[67]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/notebooks_computing_objective_functions_15_0.png" src="../_images/notebooks_computing_objective_functions_15_0.png" />
+</div>
 </div>
 </div>
 
@@ -360,20 +426,26 @@ div.rendered_html tbody tr:hover {
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
+</ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Notebooks</a><ul>
+      <li>Previous: <a href="Run_Raven_with_Parallel_parameters.html" title="previous chapter">Running a multi-member hydrological ensemble on the Raven Server</a></li>
+      <li>Next: <a href="Delineation_workflow.html" title="next chapter">Geographical analysis for hydrological modelling</a></li>
+  </ul></li>
   </ul></li>
 </ul>
 </div>

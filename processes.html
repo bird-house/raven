@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Processes &#8212; Raven 0.1.0 documentation</title>
+    <title>Processes &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Notebooks" href="notebooks/index.html" />
-    <link rel="prev" title="Configuration" href="configuration.html" />
+    <link rel="next" title="Changes" href="changes.html" />
+    <link rel="prev" title="Calibrating the MOHYSE hydrological model using OSTRICH on the Raven server" href="notebooks/running_OSTRICH_mohyse.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -57,7 +57,7 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasinsspecified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
+<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasins specified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
 <li><p><strong>storage</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file describing the total storage of water (in mm) in all water storage compartments for each time step of the simulation. Mass balance errors, cumulative input (precipitation), and output (channel losses) are also included. Note that the precipitation rates in this file are period-ending, i.e., this is the precipitation rate for the time step preceding the time stamp; all water storage variables represent instantaneous reports of the storage at the time stamp indicate.</p></li>
 <li><p><strong>solution</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – solution.rvc file to restart another simulation with the conditions at the end of this simulation.</p></li>
 <li><p><strong>diagnostics</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – Model diagnostic CSV file.</p></li>
@@ -86,11 +86,12 @@
 <li><p><strong>latitude</strong> (<em>float</em>) – Watershed’s centroid latitude</p></li>
 <li><p><strong>longitude</strong> (<em>float</em>) – Watershed’s centroid longitude</p></li>
 <li><p><strong>elevation</strong> (<em>float</em>) – Watershed’s mean elevation (m)</p></li>
+<li><p><strong>nc_index</strong> (<em>integer</em><em>, </em><em>optional</em>) – TODO</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasinsspecified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
+<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasins specified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
 <li><p><strong>storage</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file describing the total storage of water (in mm) in all water storage compartments for each time step of the simulation. Mass balance errors, cumulative input (precipitation), and output (channel losses) are also included. Note that the precipitation rates in this file are period-ending, i.e., this is the precipitation rate for the time step preceding the time stamp; all water storage variables represent instantaneous reports of the storage at the time stamp indicate.</p></li>
 <li><p><strong>solution</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – solution.rvc file to restart another simulation with the conditions at the end of this simulation.</p></li>
 <li><p><strong>diagnostics</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – Model diagnostic CSV file.</p></li>
@@ -128,7 +129,7 @@ stream flows are also required.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasinsspecified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
+<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasins specified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
 <li><p><strong>storage</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file describing the total storage of water (in mm) in all water storage compartments for each time step of the simulation. Mass balance errors, cumulative input (precipitation), and output (channel losses) are also included. Note that the precipitation rates in this file are period-ending, i.e., this is the precipitation rate for the time step preceding the time stamp; all water storage variables represent instantaneous reports of the storage at the time stamp indicate.</p></li>
 <li><p><strong>solution</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – solution.rvc file to restart another simulation with the conditions at the end of this simulation.</p></li>
 <li><p><strong>diagnostics</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – Model diagnostic CSV file.</p></li>
@@ -161,7 +162,7 @@ stream flows are also required.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasinsspecified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
+<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasins specified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
 <li><p><strong>storage</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file describing the total storage of water (in mm) in all water storage compartments for each time step of the simulation. Mass balance errors, cumulative input (precipitation), and output (channel losses) are also included. Note that the precipitation rates in this file are period-ending, i.e., this is the precipitation rate for the time step preceding the time stamp; all water storage variables represent instantaneous reports of the storage at the time stamp indicate.</p></li>
 <li><p><strong>solution</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – solution.rvc file to restart another simulation with the conditions at the end of this simulation.</p></li>
 <li><p><strong>diagnostics</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – Model diagnostic CSV file.</p></li>
@@ -194,7 +195,7 @@ stream flows are also required.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasinsspecified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
+<li><p><strong>hydrograph</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file containing the outflow hydrographs (in m3/s) for all subbasins specified as <cite>gauged</cite> in the .rvh file. It reports period-ending time-averaged flows for the preceding time step, as is consistent with most measured stream gauge data (again, the initial flow conditions at the start of the first time step are included). If observed hydrographs are specified, they will be output adjacent to the corresponding modelled  hydrograph.</p></li>
 <li><p><strong>storage</strong> (<em class="mimetype">application/x-netcdf</em>, <em class="mimetype">application/zip</em>) – A netCDF file describing the total storage of water (in mm) in all water storage compartments for each time step of the simulation. Mass balance errors, cumulative input (precipitation), and output (channel losses) are also included. Note that the precipitation rates in this file are period-ending, i.e., this is the precipitation rate for the time step preceding the time stamp; all water storage variables represent instantaneous reports of the storage at the time stamp indicate.</p></li>
 <li><p><strong>solution</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – solution.rvc file to restart another simulation with the conditions at the end of this simulation.</p></li>
 <li><p><strong>diagnostics</strong> (<em class="mimetype">text/plain</em>, <em class="mimetype">application/zip</em>) – Model diagnostic CSV file.</p></li>
@@ -256,22 +257,24 @@ stream flows are also required.</p>
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks/index.html">Notebooks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changes.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="configuration.html" title="previous chapter">Configuration</a></li>
-      <li>Next: <a href="notebooks/index.html" title="next chapter">Notebooks</a></li>
+      <li>Previous: <a href="notebooks/running_OSTRICH_mohyse.html" title="previous chapter">Calibrating the MOHYSE hydrological model using OSTRICH on the Raven server</a></li>
+      <li>Next: <a href="changes.html" title="next chapter">Changes</a></li>
   </ul></li>
 </ul>
 </div>

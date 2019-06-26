@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Notebooks &#8212; Raven 0.1.0 documentation</title>
+    <title>Notebooks &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Calling HMETS on the Raven server" href="running_hmets.html" />
-    <link rel="prev" title="Processes" href="../processes.html" />
+    <link rel="prev" title="Getting started" href="../getting_started.html" />
    
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
@@ -37,26 +37,53 @@
 <h1>Notebooks<a class="headerlink" href="#notebooks" title="Permalink to this headline">¶</a></h1>
 <p>These notebooks demonstrates a few features of the Raven server.</p>
 <p>If you’re unfamiliar with notebooks, note that typing <cite>TAB</cite> after an object will display a drop-down menu of the object’s attributes and methods, and that you need to hit <cite>CTRL-Enter</cite> to run a <em>cell</em>. You can also type <cite>?</cite> after a function or method to display the corresponding help message.</p>
-<p>Note that some of these notebooks need the bleeding edge version of <a class="reference external" href="https://geopython.github.io/OWSLib/">OWSLib</a> (&gt;=0.17.1) and <a class="reference external" href="https://birdy.readthedocs.io">Birdy</a> (&gt; 0.6.1) since some issues were found and fixed in the process of writing these notebooks.</p>
+<p>Note that some of these notebooks need the bleeding edge version of <a class="reference external" href="https://geopython.github.io/OWSLib/">OWSLib</a> (&gt;=0.17.1) and <a class="reference external" href="https://birdy.readthedocs.io">Birdy</a> (&gt; 0.6.3) since some issues were found and fixed in the process of writing these notebooks.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="running_hmets.html">Calling HMETS on the Raven server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running_gr4jcn.html">Calling GR4J-CemaNeige on the Raven server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running_mohyse.html">Calling MOHYSE on the Raven server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="running_hbv_ec.html">Calling HBV-EC on the Raven server</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_variables_other_than_flow.html">Calling GR4J-CemaNeige on the Raven server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_model_simulation.html">Running a multi-member hydrological ensemble on the Raven Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_model_simulation.html#Here-the-code-crashes-on-my-instance-with-Errno:">Here the code crashes on my instance with Errno:</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Raven_run_parallel_basins.html">Running RAVEN on a multi-basin NetCDF file in parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Run_Raven_with_Parallel_parameters.html">Running a multi-member hydrological ensemble on the Raven Server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="computing_objective_functions.html">Computing Objective Functions on the Raven server</a></li>
 <li class="toctree-l1"><a class="reference internal" href="computing_objective_functions.html#First,-Run-GR4JCN-to-generate-a-NetCDF-file-containing-'q_obs'-and-'q_sim'.">First, Run GR4JCN to generate a NetCDF file containing ‘q_obs’ and ‘q_sim’.</a></li>
-<li class="toctree-l1"><a class="reference internal" href="running_OSTRICH_hmets.html">Calibrating the HMETS hydrological model using OSTRICH on the Raven server</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Delineation_workflow.html">Complete workflow to get info from GIS tools for hydrological modelling</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Delineation_workflow.html#Now,-Let's-extract-Zonal-Stats.-Again,-can't-use-the-asobj=true,-so-we-use-False-and-then-I-am-stuck-with-the-problem-that-the-results-are-behind-a-link-I-can't-seem-to-access.">Now, Let’s extract Zonal Stats. Again, can’t use the asobj=true, so we use False and then I am stuck with the problem that the results are behind a link I can’t seem to access.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="computing_objective_functions.html#Now-that-we-have-numerical-values-for-the-goodness-of-fit,-let's-perform-a-visual-inspection.">Now that we have numerical values for the goodness-of-fit, let’s perform a visual inspection.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Delineation_workflow.html">Geographical analysis for hydrological modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Delineation_workflow.html#There-we-go!-We-have-extracted-the-contours-of-a-watershed-along-with-a-series-of-hydrologically-relevant-properties,-all-from-the-coordinates-of-a-single-location-(outlet)!">There we go! We have extracted the contours of a watershed along with a series of hydrologically relevant properties, all from the coordinates of a single location (outlet)!</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Delineation_workflow.html#NEED-TO-ADD-LAND-COVER-AND-SLOPE-EXTRACTIONS,-BUT-THIS-IS-A-GOOD-START!">NEED TO ADD LAND COVER AND SLOPE EXTRACTIONS, BUT THIS IS A GOOD START!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Time series analysis.html">Analyzing time series</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="Time series analysis.html#Base-flow-index">Base flow index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Time series analysis.html#Frequency-analysis">Frequency analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Time series analysis.html#Getting-the-parameters-of-the-distribution-and-comparing-the-fit">Getting the parameters of the distribution and comparing the fit</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Perform_Regionalization.html">Calling HMETS on the Raven server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Perform_Regionalization.html#Now-we-can-also-see-the-results-coming-from-the-5-donors-using-the-'ensemble'-variable">Now we can also see the results coming from the 5 donors using the ‘ensemble’ variable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running_OSTRICH_hmets.html">Calibrating the HMETS hydrological model using OSTRICH on the Raven server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_hmets.html#Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same.">Now, let’s do a test: Let’s run the model again using the same parameters and check to see that the NSE is the same.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_hmets.html#Run-the-HMETS-WPS:">Run the HMETS WPS:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running_OSTRICH_gr4jcn.html">Calibrating the GR4J-Cemaneige hydrological model using OSTRICH on the Raven server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_gr4jcn.html#Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same.">Now, let’s do a test: Let’s run the model again using the same parameters and check to see that the NSE is the same.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_gr4jcn.html#Run-the-GR4J-Cemaneige-WPS:">Run the GR4J-Cemaneige WPS:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running_OSTRICH_hbvec.html">Calibrating the HBV-EC hydrological model using OSTRICH on the Raven server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_hbvec.html#Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same.">Now, let’s do a test: Let’s run the model again using the same parameters and check to see that the NSE is the same.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_hbvec.html#Run-the-HBV-EC-WPS:">Run the HBV-EC WPS:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="running_OSTRICH_mohyse.html">Calibrating the MOHYSE hydrological model using OSTRICH on the Raven server</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_mohyse.html#Now,-let's-do-a-test:-Let's-run-the-model-again-using-the-same-parameters-and-check-to-see-that-the-NSE-is-the-same.">Now, let’s do a test: Let’s run the model again using the same parameters and check to see that the NSE is the same.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="running_OSTRICH_mohyse.html#Run-the-MOHYSE-WPS:">Run the MOHYSE WPS:</a></li>
 </ul>
 </li>
 </ul>
@@ -83,21 +110,23 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../processes.html">Processes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../changes.html">Changes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../configuration.html">Configuration</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="../processes.html" title="previous chapter">Processes</a></li>
+      <li>Previous: <a href="../getting_started.html" title="previous chapter">Getting started</a></li>
       <li>Next: <a href="running_hmets.html" title="next chapter">Calling HMETS on the Raven server</a></li>
   </ul></li>
 </ul>

@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>raven.processes.wps_raven &#8212; Raven 0.1.0 documentation</title>
+    <title>raven.processes.wps_raven &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -36,7 +36,7 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="k">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span> <span class="nn">pywps</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Format</span>
+<span class="kn">from</span> <span class="nn">pywps</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Format</span><span class="p">,</span> <span class="n">LiteralOutput</span>
 
 <span class="kn">from</span> <span class="nn">raven.models</span> <span class="k">import</span> <span class="n">Raven</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">wpsio</span> <span class="k">as</span> <span class="n">wio</span>
@@ -112,9 +112,12 @@
         <span class="c1"># Store output files name. If an output counts multiple files, they&#39;ll be zipped.</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.zip&#39;</span><span class="p">:</span>
-                <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">data_format</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="s1">&#39;application/zip&#39;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;.zip&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;base64&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">LiteralOutput</span><span class="p">):</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.zip&#39;</span><span class="p">:</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">data_format</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="s1">&#39;application/zip&#39;</span><span class="p">,</span> <span class="n">extension</span><span class="o">=</span><span class="s1">&#39;.zip&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;base64&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">response</span>
 
@@ -151,14 +154,16 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer.html">Developer Documentation</a></li>
+</ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../processes.html">Processes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../notebooks/index.html">Notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../changes.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../developer.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">

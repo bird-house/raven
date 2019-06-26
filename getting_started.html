@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Getting started &#8212; Raven 0.7.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Notebooks" href="notebooks/index.html" />
+    <link rel="prev" title="Raven : Hydrological modeling and analytics" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Install <a class="reference external" href="https://birdy.readthedocs.io">birdy</a> with <cite>pip install birdhouse-birdy</cite></p></li>
+<li><p>Connect to a Raven WPS server. You may deploy your own version or use the server hosted at <a class="reference external" href="https://ouranos.ca">Ouranos</a>.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">birdy</span> <span class="kn">import</span> <span class="n">WPSClient</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://pavics.ouranos.ca/twitcher/ows/proxy/raven&quot;</span>
+<span class="n">wps</span> <span class="o">=</span> <span class="n">WPSClient</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">wps</span></code> object behaves as a module, holding functions that, instead of being executed on your machine, call a remote process on the server. See the notebook tutorials for examples.</p>
+<p>If you don’t want to install anything and just try it, go to <a class="reference external" href="https://pavics.ouranos.ca/jupyter">https://pavics.ouranos.ca/jupyter</a> and login with the <cite>public</cite> account and the <cite>public</cite> password. Note that your notebooks will be publicly visible and modifiable, so don’t leave anything valuable there. Also, from time to time we’ll reset the public folders, so make sure you keep a local copy of your work.</p>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/birdhouse_logo.svg" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="index.html">Raven</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Raven : Hydrological modeling and analytics</a></li>
+      <li>Next: <a href="notebooks/index.html" title="next chapter">Notebooks</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, David Huard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/getting_started.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

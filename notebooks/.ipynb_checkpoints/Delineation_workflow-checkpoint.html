@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Geographical analysis for hydrological modelling &#8212; Raven 0.1.0 documentation</title>
+    <title>Geographical analysis for hydrological modelling &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -268,7 +268,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "90fe915a4c5843bfa660c4ca853d85c6", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "84f27d6e5c7c4aee8218a1efc1741fc0", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -333,7 +333,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b6cb6c5794c34dad8a31d03da02b4c4b", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9b38407bb3694259975c8b85f7e8b563", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <p>Now, let’s extract the data from the WPS service response:</p>
 <div class="nbinput docutils container">
@@ -393,7 +393,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f6849e7f23de4b1380f6197d8c3cd5a1", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "b5e01c2f022942fca174987b853ed559", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -526,7 +526,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>The next step will be to collect terrain data, such as elevation, slope and aspect. We will do this using the Terrain_Analysis WPS service:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -538,15 +538,15 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<script type="application/vnd.jupyter.widget-view+json">{"model_id": "8fe4ba127637471994473f106124a037", "version_major": 2, "version_minor": 0}</script></div>
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "f1085e4b8ad141d590ad3dd99583bc74", "version_major": 2, "version_minor": 0}</script></div>
 </div>
 <p>Now let’s extract the properties from the WPS response. Use asobj=True to have Birdy preprocess the data and return the data directly.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="p">[</span><span class="n">properties</span><span class="p">,</span> <span class="p">]</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="p">[</span><span class="n">properties</span><span class="p">,</span> <span class="n">dem</span><span class="p">]</span><span class="o">=</span><span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">elevation</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;elevation&#39;</span><span class="p">]</span>
 <span class="n">slope</span><span class="o">=</span><span class="n">properties</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;slope&#39;</span><span class="p">]</span>
@@ -556,9 +556,18 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/david/src/birdy/birdy/client/converters.py:287: UserWarning: No converter was found for dem
+  warnings.warn(UserWarning(&#34;No converter was found for {}&#34;.format(output.identifier)))
+</pre></div></div>
+</div>
 <p>Finally, display all the extracted parameters for the user:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -574,6 +583,34 @@ div.rendered_html tbody tr:hover {
 <div class="highlight"><pre>
 {&#39;area&#39;: 28.76484946504176, &#39;longitude&#39;: -71.3409808346398, &#39;latitude&#39;: 50.478880424555875, &#39;gravelius&#39;: 1.7366297521025682, &#39;perimeter&#39;: 33017.42666655582, &#39;Forest&#39;: 0.5770231039071005, &#39;Shrubs&#39;: 0.3096346921495101, &#39;Grass&#39;: 0.014485303011975323, &#39;Wetland&#39;: 0.0006350550381033022, &#39;Crops&#39;: 0.0, &#39;Urban&#39;: 0.0, &#39;Water&#39;: 0.09822184589331075, &#39;SnowIce&#39;: 0.0, &#39;elevation&#39;: 490.04395604395603, &#39;slope&#39;: 3.9660612485567572, &#39;aspect&#39;: 116.79663053081183}
 </pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">cartopy.crs</span> <span class="k">as</span> <span class="nn">ccrs</span>
+<span class="kn">import</span> <span class="nn">rasterio</span>
+<span class="kn">from</span> <span class="nn">rasterio.plot</span> <span class="k">import</span> <span class="n">show</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+
+<span class="k">with</span> <span class="n">rasterio</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">dem</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">src</span><span class="p">:</span>
+    <span class="n">crs</span> <span class="o">=</span> <span class="n">ccrs</span><span class="o">.</span><span class="n">epsg</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">crs</span><span class="o">.</span><span class="n">to_epsg</span><span class="p">())</span>
+    <span class="n">da</span> <span class="o">=</span> <span class="n">xr</span><span class="o">.</span><span class="n">open_rasterio</span><span class="p">(</span><span class="n">dem</span><span class="p">)</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Elevation&#39;</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;m&#39;</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span>
+    <span class="n">da</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">da</span><span class="o">!=-</span><span class="mi">32768</span><span class="p">)</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">band</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">crs</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../_images/notebooks_.ipynb_checkpoints_Delineation_workflow-checkpoint_22_0.png" src="../../_images/notebooks_.ipynb_checkpoints_Delineation_workflow-checkpoint_22_0.png" />
+</div>
 </div>
 <div class="section" id="There-we-go!-We-have-extracted-the-contours-of-a-watershed-along-with-a-series-of-hydrologically-relevant-properties,-all-from-the-coordinates-of-a-single-location-(outlet)!">
 <h2>There we go! We have extracted the contours of a watershed along with a series of hydrologically relevant properties, all from the coordinates of a single location (outlet)!<a class="headerlink" href="#There-we-go!-We-have-extracted-the-contours-of-a-watershed-along-with-a-series-of-hydrologically-relevant-properties,-all-from-the-coordinates-of-a-single-location-(outlet)!" title="Permalink to this headline">¶</a></h2>
@@ -600,14 +637,16 @@ div.rendered_html tbody tr:hover {
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Documentation</a></li>
+</ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../processes.html">Processes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changes.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">

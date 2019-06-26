@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Calibrating the HMETS hydrological model using OSTRICH on the Raven server &#8212; Raven 0.1.0 documentation</title>
+    <title>Calibrating the HMETS hydrological model using OSTRICH on the Raven server &#8212; Raven 0.7.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -244,7 +244,7 @@ div.rendered_html tbody tr:hover {
 <h1>Calibrating the HMETS hydrological model using OSTRICH on the Raven server<a class="headerlink" href="#Calibrating-the-HMETS-hydrological-model-using-OSTRICH-on-the-Raven-server" title="Permalink to this headline">¶</a></h1>
 <p>Here we use birdy’s WPS client to calibrate the HMETS hydrological model on the server and analyze the calibrated parameter set and hydrograph.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -262,8 +262,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -296,32 +296,17 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># And get the response</span>
 <span class="c1"># With `asobj` set to False, only the reference to the output is returned in the response.</span>
 <span class="c1"># Setting `asobj` to True will retrieve the actual files and copy the locally.</span>
-<span class="p">[</span><span class="n">calibration</span><span class="p">,</span> <span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[</span><span class="n">calibration</span><span class="p">,</span> <span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">,</span> <span class="n">calibparams</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-12-952194057683&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">     26</span> <span class="ansi-red-fg"># With `asobj` set to False, only the reference to the output is returned in the response.</span>
-<span class="ansi-green-intense-fg ansi-bold">     27</span> <span class="ansi-red-fg"># Setting `asobj` to True will retrieve the actual files and copy the locally.</span>
-<span class="ansi-green-fg">---&gt; 28</span><span class="ansi-red-fg"> </span><span class="ansi-blue-fg">[</span>calibrationTXT<span class="ansi-blue-fg">,</span>CalibrationResults<span class="ansi-blue-fg">,</span>calibrated_params<span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">=</span>resp<span class="ansi-blue-fg">.</span>get<span class="ansi-blue-fg">(</span>asobj<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">True</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">ValueError</span>: too many values to unpack (expected 3)
-</pre></div></div>
 </div>
 <p>Since we requested output objects, we can simply access the output objects. The dianostics is just a CSV file:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="nb">print</span><span class="p">(</span><span class="n">diagnostics</span><span class="p">)</span>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">calibparams</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -330,14 +315,16 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-observed data series,filename,DIAG_NASH_SUTCLIFFE,DIAG_RMSE,
-HYDROGRAPH,./model//Salmon-River-Near-Prince-George_meteo_daily.nc,-3.55665,110.6,
-
+[ 1.653174e+01  3.678551e+00  5.905587e+00  9.852317e-01  8.145660e+00
+  9.192945e+00  2.810503e+00  4.716799e-02  8.181680e-02  1.660036e-01
+  2.857117e-02 -1.762671e+00  5.025134e-02  5.668181e-01  9.193560e-01
+  3.239183e-01  1.621145e-02  8.853951e-03  1.117335e-03  1.509350e-01
+  4.396423e-01]
 </pre></div></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">hydrograph</span></code> and <code class="docutils literal notranslate"><span class="pre">storage</span></code> outputs are netCDF files storing the time series. These files are opened by default using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, which provides convenient and powerful time series analysis and plotting tools.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -346,20 +333,20 @@ HYDROGRAPH,./model//Salmon-River-Near-Prince-George_meteo_daily.nc,-3.55665,110.
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
 <span></span>&lt;xarray.DataArray &#39;q_sim&#39; (time: 209, nbasins: 1)&gt;
 array([[  0.      ],
-       [317.767047],
-       [602.685996],
+       [ 81.069867],
+       [155.109581],
        ...,
-       [ 16.700328],
-       [ 55.739867],
-       [101.356578]])
+       [ 77.309924],
+       [115.485875],
+       [161.592978]])
 Coordinates:
-  * time        (time) datetime64[ns] 1954-01-01 1954-01-02 1954-01-03 ...
+  * time        (time) datetime64[ns] 1954-01-01 1954-01-02 ... 1954-07-28
     basin_name  (nbasins) object ...
 Dimensions without coordinates: nbasins
 Attributes:
@@ -369,7 +356,7 @@ Attributes:
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -378,11 +365,24 @@ Attributes:
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ets/miniconda3/lib/python3.7/site-packages/pandas/plotting/_converter.py:129: FutureWarning: Using an implicitly registered datetime converter for a matplotlib plotting method. The converter was registered by pandas on import. Future versions of pandas will require you to explicitly register matplotlib converters.
+
+To register the converters:
+        &gt;&gt;&gt; from pandas.plotting import register_matplotlib_converters
+        &gt;&gt;&gt; register_matplotlib_converters()
+  warnings.warn(msg, FutureWarning)
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area highlight-none notranslate"><div class="highlight"><pre>
-<span></span>[&lt;matplotlib.lines.Line2D at 0x7faf9b796710&gt;]
+<span></span>[&lt;matplotlib.lines.Line2D at 0x7f89f0cae780&gt;]
 </pre></div>
 </div>
 </div>
@@ -390,11 +390,11 @@ Attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../../_images/notebooks_.ipynb_checkpoints_running_OSTRICH_hmets-checkpoint_8_1.png" src="../../_images/notebooks_.ipynb_checkpoints_running_OSTRICH_hmets-checkpoint_8_1.png" />
+<img alt="../../_images/notebooks_.ipynb_checkpoints_running_OSTRICH_hmets-checkpoint_8_2.png" src="../../_images/notebooks_.ipynb_checkpoints_running_OSTRICH_hmets-checkpoint_8_2.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -404,22 +404,54 @@ Attributes:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Max:  &lt;xarray.DataArray &#39;q_sim&#39; ()&gt;
-array(602.685996)
+array(201.030086)
 Mean:  &lt;xarray.DataArray &#39;q_sim&#39; ()&gt;
-array(71.840511)
+array(84.175412)
 Monthly means:  &lt;xarray.DataArray &#39;q_sim&#39; (month: 7)&gt;
-array([190.565714,  60.216904,   5.036852,   9.51106 , 139.359067,  48.586079,
-        42.923882])
+array([ 64.017862, 100.245198,  94.658255,  58.603366,  65.044782, 100.572446,
+       109.827618])
 Coordinates:
   * month    (month) int64 1 2 3 4 5 6 7
 </pre></div></div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/ets/miniconda3/lib/python3.7/site-packages/xarray/core/groupby.py:639: FutureWarning: Default reduction dimension will be changed to the grouped dimension in a future version of xarray. To silence this warning, pass dim=xarray.ALL_DIMS explicitly.
+  skipna=skipna, allow_lazy=True, **kwargs)
+</pre></div></div>
+</div>
+<div class="section" id="Here-is-the-tricky-part:-How-to-extract-the-best-parameter-sets?-The-results-are-in-&quot;calibration&quot;,-which-is-just-a-text-file:">
+<h2>Here is the tricky part: How to extract the best parameter sets? The results are in “calibration”, which is just a text file:<a class="headerlink" href="#Here-is-the-tricky-part:-How-to-extract-the-best-parameter-sets?-The-results-are-in-"calibration",-which-is-just-a-text-file:" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">calibration</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area highlight-none notranslate"><div class="highlight"><pre>
+<span></span>&#39;--------------------------------------------------------------------------\n OSTRICH version 19.06.04 (Built Jun  4 2019 @ 23:17:50)\n\n A computer program for model-independent calibration and optimization.\n\n Author             L. Shawn Matott\n Copyright (C) 2007 L. Shawn Matott\n\n This program is free software; you can redistribute \n it and/or modify it under the terms of the GNU  \n General Public License as published by the Free \n Software Foundation; either version 2 of the \n License, or(at your option) any later version. \n\n This program is distributed in the hope that it will \n be useful, but WITHOUT ANY WARRANTY; without even \n the implied warranty of MERCHANTABILITY or FITNESS \n FOR A PARTICULAR PURPOSE. See the GNU General Public \n License for more details. \n\n You should have received a copy of the GNU General \n Public License along with this program; if not, \n write to the Free Software Foundation, Inc., 59 \n Temple Place, Suite 330, Boston, MA 02111-1307 USA \n--------------------------------------------------------------------------\n\nOstrich Setup\nModel                  : ./ostrich-runs-raven.sh &gt; OstExeOut.txt 2&gt;&amp;1\nAlgorithm              : Dynamically Dimensioned Search Algorithm (DDS)\nObjective Function     : GCOP\nNumber of Parameters   : 21\nNumber of Tied Params  : 4\nNumber of Observations : 0\nSeed for Random Nums.  : 1559869656\nNumber of Resp. Vars        : 1\nNumber of Tied Resp. Vars   : 1\nNumber of Constraints       : 0\nPenalty Method              : Additive Penalty Method (APM)\n\nOstrich Run Record\ntrial    best fitness   par_x01       par_x02       par_x03       par_x04       par_x05       par_x06       par_x07       par_x08       par_x09       par_x10       par_x11       par_x12       par_x13       par_x14       par_x15       par_x16       par_x17       par_x18       par_x19       par_x20       par_x21        trials remaining\n1     2.386060E+00  1.640672E+01  3.626491E+00  1.027555E+01  4.628261E-01  5.552098E+00  8.803170E+00  -1.828128E+00  9.342238E-02  5.315137E-02  2.093300E-01  6.551283E-02  1.043406E+00  1.927828E+00  8.394327E-01  2.441438E+00  3.009978E-01  1.984692E-02  5.735226E-03  3.078175E-03  1.822071E-01  1.353083E+00  9.000000E+00\n5     1.926670E+00  1.900415E+01  2.285090E+00  4.656642E+00  1.434251E+00  8.734307E+00  5.984988E+00  -8.934524E-01  1.269747E-01  7.883822E-03  1.773552E-01  7.316258E-02  -1.826606E+00  1.251761E+00  1.985354E-02  2.588758E+00  2.754796E-01  1.923598E-02  8.390839E-02  3.404743E-03  9.012821E-02  4.903588E-01  5.000000E+00\n7     1.490420E+00  1.720767E+01  1.278350E+00  1.109482E+00  1.425166E+00  1.001931E+01  3.703735E+00  -8.934524E-01  1.269747E-01  9.677961E-03  1.773552E-01  7.316258E-02  -1.529080E+00  1.052644E+00  3.654738E-02  2.478741E+00  2.754796E-01  1.306296E-02  8.390839E-02  3.404743E-03  9.012821E-02  2.784125E-01  3.000000E+00\n8     1.376520E+00  1.720767E+01  1.278350E+00  1.109482E+00  1.433786E+00  1.001931E+01  3.703735E+00  -8.934524E-01  1.517969E-01  9.677961E-03  1.773552E-01  7.316258E-02  -1.529080E+00  1.762380E+00  3.654738E-02  2.478741E+00  3.752680E-01  1.911386E-02  8.390839E-02  3.404743E-03  9.012821E-02  2.784125E-01  2.000000E+00\n9     1.206770E+00  1.720767E+01  1.278350E+00  1.109482E+00  1.433786E+00  1.001931E+01  3.703735E+00  -8.934524E-01  1.517969E-01  9.677961E-03  1.773552E-01  7.316258E-02  -1.529080E+00  1.585980E+00  3.654738E-02  2.478741E+00  3.752680E-01  1.911386E-02  8.390839E-02  3.404743E-03  6.721080E-02  2.784125E-01  1.000000E+00\n10    1.206770E+00  1.720767E+01  1.278350E+00  1.109482E+00  1.433786E+00  1.001931E+01  3.703735E+00  -8.934524E-01  1.517969E-01  9.677961E-03  1.773552E-01  7.316258E-02  -1.529080E+00  1.585980E+00  3.654738E-02  2.478741E+00  3.752680E-01  1.911386E-02  8.390839E-02  3.404743E-03  6.721080E-02  2.784125E-01  0.000000E+00\n\nOptimal Parameter Set\nObjective Function : 1.206770E+00\npar_x01            : 1.720767E+01\npar_x02            : 1.278350E+00\npar_x03            : 1.109482E+00\npar_x04            : 1.433786E+00\npar_x05            : 1.001931E+01\npar_x06            : 3.703735E+00\npar_x07            : -8.934524E-01\npar_x08            : 1.517969E-01\npar_x09            : 9.677961E-03\npar_x10            : 1.773552E-01\npar_x11            : 7.316258E-02\npar_x12            : -1.529080E+00\npar_x13            : 1.585980E+00\npar_x14            : 3.654738E-02\npar_x15            : 2.478741E+00\npar_x16            : 3.752680E-01\npar_x17            : 1.911386E-02\npar_x18            : 8.390839E-02\npar_x19            : 3.404743E-03\npar_x20            : 6.721080E-02\npar_x21            : 2.784125E-01\npar_sum_x05_x06    : 1.372305E+01\npar_sum_x09_x10    : 1.870332E-01\npar_half_x20       : 3.360540E+01\npar_half_x21       : 1.392063E+02\n\nSummary of Constraints\n\nAlgorithm Metrics\nAlgorithm               : Dynamically-Dimensioned Search Algorithm (DDS)\nDesired Convergence Val : N/A\nActual Convergence Val  : N/A\nMax Generations         : 10\nActual Generations      : 10\nPeterbation Value       : 0.200000\nTotal Evals             : 11\nTelescoping Strategy    : none\nAlgorithm successfully converged on a solution, however more runs may be needed\n&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="We-would-need-some-type-of-method-to-automate-the-extraction-that-is-independent-of-the-hydrological-model!">
+<h2>We would need some type of method to automate the extraction that is independent of the hydrological model!<a class="headerlink" href="#We-would-need-some-type-of-method-to-automate-the-extraction-that-is-independent-of-the-hydrological-model!" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -427,6 +459,7 @@ Coordinates:
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span>
 </pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -451,14 +484,16 @@ Coordinates:
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Documentation</a></li>
+</ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../processes.html">Processes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../index.html">Notebooks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../changes.html">Changes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Documentation</a></li>
 </ul>
 
 <div class="relations">

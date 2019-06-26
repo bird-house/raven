@@ -1,0 +1,605 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Calling GR4J-CemaNeige on the Raven server &#8212; Raven 0.7.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput,
+div.nbinput div.prompt,
+div.nbinput div.input_area,
+div.nbinput div[class*=highlight],
+div.nbinput div[class*=highlight] pre,
+div.nboutput,
+div.nbinput div.prompt,
+div.nbinput div.output_area,
+div.nboutput div[class*=highlight],
+div.nboutput div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput,
+div.nboutput {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput,
+    div.nboutput {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput div.prompt,
+div.nboutput div.prompt {
+    min-width: 5ex;
+    padding-top: 0.4em;
+    padding-right: 0.4em;
+    text-align: right;
+    flex: 0;
+}
+@media (max-width: 540px) {
+    div.nbinput div.prompt,
+    div.nboutput div.prompt {
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput div.prompt.empty {
+        padding: 0;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput div.prompt pre,
+div.nboutput div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput div.input_area,
+div.nboutput div.output_area {
+    padding: 0.4em;
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput div.input_area,
+    div.nboutput div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="section" id="Calling-GR4J-CemaNeige-on-the-Raven-server">
+<h1>Calling GR4J-CemaNeige on the Raven server<a class="headerlink" href="#Calling-GR4J-CemaNeige-on-the-Raven-server" title="Permalink to this headline">¶</a></h1>
+<p>Here we use birdy’s WPS client to launch the GR4JCN hydrological model on the server and analyze the output.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">birdy</span> <span class="k">import</span> <span class="n">WPSClient</span>
+
+<span class="kn">from</span> <span class="nn">example_data</span> <span class="k">import</span> <span class="n">TESTDATA</span>
+<span class="kn">import</span> <span class="nn">datetime</span> <span class="k">as</span> <span class="nn">dt</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlretrieve</span>
+<span class="kn">import</span> <span class="nn">xarray</span> <span class="k">as</span> <span class="nn">xr</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="k">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="c1">#url = &quot;http://localhost:9099/wps&quot;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://pavics.ouranos.ca/raven/wps&quot;</span>
+<span class="n">wps</span> <span class="o">=</span> <span class="n">WPSClient</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># The model parameters. Can either be a string of comma separated values, a list, an array or a named tuple.</span>
+<span class="n">params</span> <span class="o">=</span> <span class="s1">&#39;0.529, -3.396, 407.29, 1.072, 16.9, 0.947&#39;</span>
+
+<span class="c1"># Forcing files</span>
+<span class="n">ts</span><span class="o">=</span><span class="n">TESTDATA</span><span class="p">[</span><span class="s1">&#39;raven-gr4j-cemaneige-nc-ts&#39;</span><span class="p">]</span>
+
+<span class="c1"># Model configuration parameters</span>
+<span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">start_date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">end_date</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">2002</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">area</span><span class="o">=</span><span class="mf">4250.6</span><span class="p">,</span>
+    <span class="n">elevation</span><span class="o">=</span><span class="mf">843.0</span><span class="p">,</span>
+    <span class="n">latitude</span><span class="o">=</span><span class="mf">54.4848</span><span class="p">,</span>
+    <span class="n">longitude</span><span class="o">=-</span><span class="mf">123.3659</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="c1"># Let&#39;s call the model</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">wps</span><span class="o">.</span><span class="n">raven_gr4j_cemaneige</span><span class="p">(</span><span class="n">ts</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">ts</span><span class="p">),</span> <span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1"># And get the response</span>
+<span class="c1"># With `asobj` set to False, only the reference to the output is returned in the response.</span>
+<span class="c1"># Setting `asobj` to True will retrieve the actual files and copy the locally.</span>
+<span class="p">[</span><span class="n">hydrograph</span><span class="p">,</span> <span class="n">storage</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">diagnostics</span><span class="p">]</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">asobj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ConnectionResetError</span>                      Traceback (most recent call last)
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/connectionpool.py</span> in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, **response_kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    600</span>                                                   body<span class="ansi-blue-fg">=</span>body<span class="ansi-blue-fg">,</span> headers<span class="ansi-blue-fg">=</span>headers<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 601</span><span class="ansi-red-fg">                                                   chunked=chunked)
+</span><span class="ansi-green-intense-fg ansi-bold">    602</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/connectionpool.py</span> in <span class="ansi-cyan-fg">_make_request</span><span class="ansi-blue-fg">(self, conn, method, url, timeout, chunked, **httplib_request_kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    356</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 357</span><span class="ansi-red-fg">             </span>conn<span class="ansi-blue-fg">.</span>request<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">,</span> url<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>httplib_request_kw<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    358</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">request</span><span class="ansi-blue-fg">(self, method, url, body, headers, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1238</span>         <span class="ansi-blue-fg">&#34;&#34;&#34;Send a complete request to the server.&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">-&gt; 1239</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_send_request<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">,</span> url<span class="ansi-blue-fg">,</span> body<span class="ansi-blue-fg">,</span> headers<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1240</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">_send_request</span><span class="ansi-blue-fg">(self, method, url, body, headers, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1284</span>             body <span class="ansi-blue-fg">=</span> _encode<span class="ansi-blue-fg">(</span>body<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;body&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1285</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>endheaders<span class="ansi-blue-fg">(</span>body<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">=</span>encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1286</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">endheaders</span><span class="ansi-blue-fg">(self, message_body, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1233</span>             <span class="ansi-green-fg">raise</span> CannotSendHeader<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1234</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_send_output<span class="ansi-blue-fg">(</span>message_body<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">=</span>encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1235</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">_send_output</span><span class="ansi-blue-fg">(self, message_body, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1064</span>                         <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">b&#39;\r\n&#39;</span>
+<span class="ansi-green-fg">-&gt; 1065</span><span class="ansi-red-fg">                 </span>self<span class="ansi-blue-fg">.</span>send<span class="ansi-blue-fg">(</span>chunk<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1066</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">send</span><span class="ansi-blue-fg">(self, data)</span>
+<span class="ansi-green-intense-fg ansi-bold">    985</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 986</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>sock<span class="ansi-blue-fg">.</span>sendall<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    987</span>         <span class="ansi-green-fg">except</span> TypeError<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">ConnectionResetError</span>: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">ProtocolError</span>                             Traceback (most recent call last)
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/requests/adapters.py</span> in <span class="ansi-cyan-fg">send</span><span class="ansi-blue-fg">(self, request, stream, timeout, verify, cert, proxies)</span>
+<span class="ansi-green-intense-fg ansi-bold">    444</span>                     retries<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>max_retries<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 445</span><span class="ansi-red-fg">                     </span>timeout<span class="ansi-blue-fg">=</span>timeout
+<span class="ansi-green-intense-fg ansi-bold">    446</span>                 )
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/connectionpool.py</span> in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, **response_kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    638</span>             retries = retries.increment(method, url, error=e, _pool=self,
+<span class="ansi-green-fg">--&gt; 639</span><span class="ansi-red-fg">                                         _stacktrace=sys.exc_info()[2])
+</span><span class="ansi-green-intense-fg ansi-bold">    640</span>             retries<span class="ansi-blue-fg">.</span>sleep<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/util/retry.py</span> in <span class="ansi-cyan-fg">increment</span><span class="ansi-blue-fg">(self, method, url, response, error, _pool, _stacktrace)</span>
+<span class="ansi-green-intense-fg ansi-bold">    356</span>             <span class="ansi-green-fg">if</span> read <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">False</span> <span class="ansi-green-fg">or</span> <span class="ansi-green-fg">not</span> self<span class="ansi-blue-fg">.</span>_is_method_retryable<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 357</span><span class="ansi-red-fg">                 </span><span class="ansi-green-fg">raise</span> six<span class="ansi-blue-fg">.</span>reraise<span class="ansi-blue-fg">(</span>type<span class="ansi-blue-fg">(</span>error<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> error<span class="ansi-blue-fg">,</span> _stacktrace<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    358</span>             <span class="ansi-green-fg">elif</span> read <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/packages/six.py</span> in <span class="ansi-cyan-fg">reraise</span><span class="ansi-blue-fg">(tp, value, tb)</span>
+<span class="ansi-green-intense-fg ansi-bold">    684</span>         <span class="ansi-green-fg">if</span> value<span class="ansi-blue-fg">.</span>__traceback__ <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">not</span> tb<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 685</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> value<span class="ansi-blue-fg">.</span>with_traceback<span class="ansi-blue-fg">(</span>tb<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    686</span>         <span class="ansi-green-fg">raise</span> value
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/connectionpool.py</span> in <span class="ansi-cyan-fg">urlopen</span><span class="ansi-blue-fg">(self, method, url, body, headers, retries, redirect, assert_same_host, timeout, pool_timeout, release_conn, chunked, body_pos, **response_kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    600</span>                                                   body<span class="ansi-blue-fg">=</span>body<span class="ansi-blue-fg">,</span> headers<span class="ansi-blue-fg">=</span>headers<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 601</span><span class="ansi-red-fg">                                                   chunked=chunked)
+</span><span class="ansi-green-intense-fg ansi-bold">    602</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/urllib3/connectionpool.py</span> in <span class="ansi-cyan-fg">_make_request</span><span class="ansi-blue-fg">(self, conn, method, url, timeout, chunked, **httplib_request_kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    356</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 357</span><span class="ansi-red-fg">             </span>conn<span class="ansi-blue-fg">.</span>request<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">,</span> url<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>httplib_request_kw<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    358</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">request</span><span class="ansi-blue-fg">(self, method, url, body, headers, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1238</span>         <span class="ansi-blue-fg">&#34;&#34;&#34;Send a complete request to the server.&#34;&#34;&#34;</span>
+<span class="ansi-green-fg">-&gt; 1239</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_send_request<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">,</span> url<span class="ansi-blue-fg">,</span> body<span class="ansi-blue-fg">,</span> headers<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1240</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">_send_request</span><span class="ansi-blue-fg">(self, method, url, body, headers, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1284</span>             body <span class="ansi-blue-fg">=</span> _encode<span class="ansi-blue-fg">(</span>body<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;body&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1285</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>endheaders<span class="ansi-blue-fg">(</span>body<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">=</span>encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1286</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">endheaders</span><span class="ansi-blue-fg">(self, message_body, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1233</span>             <span class="ansi-green-fg">raise</span> CannotSendHeader<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">-&gt; 1234</span><span class="ansi-red-fg">         </span>self<span class="ansi-blue-fg">.</span>_send_output<span class="ansi-blue-fg">(</span>message_body<span class="ansi-blue-fg">,</span> encode_chunked<span class="ansi-blue-fg">=</span>encode_chunked<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1235</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">_send_output</span><span class="ansi-blue-fg">(self, message_body, encode_chunked)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1064</span>                         <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">b&#39;\r\n&#39;</span>
+<span class="ansi-green-fg">-&gt; 1065</span><span class="ansi-red-fg">                 </span>self<span class="ansi-blue-fg">.</span>send<span class="ansi-blue-fg">(</span>chunk<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1066</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/http/client.py</span> in <span class="ansi-cyan-fg">send</span><span class="ansi-blue-fg">(self, data)</span>
+<span class="ansi-green-intense-fg ansi-bold">    985</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 986</span><span class="ansi-red-fg">             </span>self<span class="ansi-blue-fg">.</span>sock<span class="ansi-blue-fg">.</span>sendall<span class="ansi-blue-fg">(</span>data<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    987</span>         <span class="ansi-green-fg">except</span> TypeError<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">ProtocolError</span>: (&#39;Connection aborted.&#39;, ConnectionResetError(104, &#39;Connection reset by peer&#39;))
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">ConnectionError</span>                           Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-2-aa6a5c41867f&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">     16</span>
+<span class="ansi-green-intense-fg ansi-bold">     17</span> <span class="ansi-red-fg"># Let&#39;s call the model</span>
+<span class="ansi-green-fg">---&gt; 18</span><span class="ansi-red-fg"> </span>resp <span class="ansi-blue-fg">=</span> wps<span class="ansi-blue-fg">.</span>raven_gr4j_cemaneige<span class="ansi-blue-fg">(</span>ts<span class="ansi-blue-fg">=</span>str<span class="ansi-blue-fg">(</span>ts<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">,</span> params <span class="ansi-blue-fg">=</span> params<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>config<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     19</span>
+<span class="ansi-green-intense-fg ansi-bold">     20</span> <span class="ansi-red-fg"># And get the response</span>
+
+<span class="ansi-green-fg">&lt;/home/david/src/birdy/birdy/client/base.py-3&gt;</span> in <span class="ansi-cyan-fg">raven_gr4j_cemaneige</span><span class="ansi-blue-fg">(self, ts, latitude, longitude, elevation, params, start_date, end_date, duration, run_name, name, area)</span>
+
+<span class="ansi-green-fg">~/src/birdy/birdy/client/base.py</span> in <span class="ansi-cyan-fg">_execute</span><span class="ansi-blue-fg">(self, pid, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    275</span>         <span class="ansi-green-fg">try</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    276</span>             wps_response = self._wps.execute(
+<span class="ansi-green-fg">--&gt; 277</span><span class="ansi-red-fg">                 </span>pid<span class="ansi-blue-fg">,</span> inputs<span class="ansi-blue-fg">=</span>wps_inputs<span class="ansi-blue-fg">,</span> output<span class="ansi-blue-fg">=</span>wps_outputs<span class="ansi-blue-fg">,</span> mode<span class="ansi-blue-fg">=</span>mode
+<span class="ansi-green-intense-fg ansi-bold">    278</span>             )
+<span class="ansi-green-intense-fg ansi-bold">    279</span>
+
+<span class="ansi-green-fg">~/src/OWSLib/owslib/wps.py</span> in <span class="ansi-cyan-fg">execute</span><span class="ansi-blue-fg">(self, identifier, inputs, output, mode, lineage, request, response)</span>
+<span class="ansi-green-intense-fg ansi-bold">    334</span>         <span class="ansi-red-fg"># submit the request to the live server</span>
+<span class="ansi-green-intense-fg ansi-bold">    335</span>         <span class="ansi-green-fg">if</span> response <span class="ansi-green-fg">is</span> <span class="ansi-green-fg">None</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 336</span><span class="ansi-red-fg">             </span>response <span class="ansi-blue-fg">=</span> execution<span class="ansi-blue-fg">.</span>submitRequest<span class="ansi-blue-fg">(</span>request<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    337</span>         <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    338</span>             response <span class="ansi-blue-fg">=</span> etree<span class="ansi-blue-fg">.</span>fromstring<span class="ansi-blue-fg">(</span>response<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/src/OWSLib/owslib/wps.py</span> in <span class="ansi-cyan-fg">submitRequest</span><span class="ansi-blue-fg">(self, request)</span>
+<span class="ansi-green-intense-fg ansi-bold">    867</span>         response = reader.readFromUrl(
+<span class="ansi-green-intense-fg ansi-bold">    868</span>             self<span class="ansi-blue-fg">.</span>url<span class="ansi-blue-fg">,</span> request<span class="ansi-blue-fg">,</span> method<span class="ansi-blue-fg">=</span><span class="ansi-blue-fg">&#39;Post&#39;</span><span class="ansi-blue-fg">,</span> username<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>username<span class="ansi-blue-fg">,</span> password<span class="ansi-blue-fg">=</span>self<span class="ansi-blue-fg">.</span>password<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 869</span><span class="ansi-red-fg">             headers=self.headers, verify=self.verify, cert=self.cert)
+</span><span class="ansi-green-intense-fg ansi-bold">    870</span>         self<span class="ansi-blue-fg">.</span>response <span class="ansi-blue-fg">=</span> response
+<span class="ansi-green-intense-fg ansi-bold">    871</span>         <span class="ansi-green-fg">return</span> response
+
+<span class="ansi-green-fg">~/src/OWSLib/owslib/wps.py</span> in <span class="ansi-cyan-fg">readFromUrl</span><span class="ansi-blue-fg">(self, url, data, method, username, password, headers, verify, cert)</span>
+<span class="ansi-green-intense-fg ansi-bold">    563</span>
+<span class="ansi-green-intense-fg ansi-bold">    564</span>         return self._readFromUrl(url, data, self.timeout, method, username=username, password=password,
+<span class="ansi-green-fg">--&gt; 565</span><span class="ansi-red-fg">                                  headers=headers, verify=verify, cert=cert)
+</span><span class="ansi-green-intense-fg ansi-bold">    566</span>
+<span class="ansi-green-intense-fg ansi-bold">    567</span>
+
+<span class="ansi-green-fg">~/src/OWSLib/owslib/wps.py</span> in <span class="ansi-cyan-fg">_readFromUrl</span><span class="ansi-blue-fg">(self, url, data, timeout, method, username, password, headers, verify, cert)</span>
+<span class="ansi-green-intense-fg ansi-bold">    473</span>             u = openURL(url, data, method=&#39;Post&#39;,
+<span class="ansi-green-intense-fg ansi-bold">    474</span>                         username<span class="ansi-blue-fg">=</span>username<span class="ansi-blue-fg">,</span> password<span class="ansi-blue-fg">=</span>password<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 475</span><span class="ansi-red-fg">                         headers=headers, verify=verify, cert=cert, timeout=timeout)
+</span><span class="ansi-green-intense-fg ansi-bold">    476</span>             <span class="ansi-green-fg">return</span> etree<span class="ansi-blue-fg">.</span>fromstring<span class="ansi-blue-fg">(</span>u<span class="ansi-blue-fg">.</span>read<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    477</span>
+
+<span class="ansi-green-fg">~/src/OWSLib/owslib/util.py</span> in <span class="ansi-cyan-fg">openURL</span><span class="ansi-blue-fg">(url_base, data, method, cookies, username, password, timeout, headers, verify, cert)</span>
+<span class="ansi-green-intense-fg ansi-bold">    188</span>                            verify<span class="ansi-blue-fg">=</span>verify<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-intense-fg ansi-bold">    189</span>                            cert<span class="ansi-blue-fg">=</span>cert<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 190</span><span class="ansi-red-fg">                            **rkwargs)
+</span><span class="ansi-green-intense-fg ansi-bold">    191</span>
+<span class="ansi-green-intense-fg ansi-bold">    192</span>     <span class="ansi-green-fg">if</span> req<span class="ansi-blue-fg">.</span>status_code <span class="ansi-green-fg">in</span> <span class="ansi-blue-fg">[</span><span class="ansi-cyan-fg">400</span><span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">401</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/requests/api.py</span> in <span class="ansi-cyan-fg">request</span><span class="ansi-blue-fg">(method, url, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">     56</span>     <span class="ansi-red-fg"># cases, and look like a memory leak in others.</span>
+<span class="ansi-green-intense-fg ansi-bold">     57</span>     <span class="ansi-green-fg">with</span> sessions<span class="ansi-blue-fg">.</span>Session<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> session<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">---&gt; 58</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> session<span class="ansi-blue-fg">.</span>request<span class="ansi-blue-fg">(</span>method<span class="ansi-blue-fg">=</span>method<span class="ansi-blue-fg">,</span> url<span class="ansi-blue-fg">=</span>url<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">     59</span>
+<span class="ansi-green-intense-fg ansi-bold">     60</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/requests/sessions.py</span> in <span class="ansi-cyan-fg">request</span><span class="ansi-blue-fg">(self, method, url, params, data, headers, cookies, files, auth, timeout, allow_redirects, proxies, hooks, stream, verify, cert, json)</span>
+<span class="ansi-green-intense-fg ansi-bold">    510</span>         }
+<span class="ansi-green-intense-fg ansi-bold">    511</span>         send_kwargs<span class="ansi-blue-fg">.</span>update<span class="ansi-blue-fg">(</span>settings<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">--&gt; 512</span><span class="ansi-red-fg">         </span>resp <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>send<span class="ansi-blue-fg">(</span>prep<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>send_kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    513</span>
+<span class="ansi-green-intense-fg ansi-bold">    514</span>         <span class="ansi-green-fg">return</span> resp
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/requests/sessions.py</span> in <span class="ansi-cyan-fg">send</span><span class="ansi-blue-fg">(self, request, **kwargs)</span>
+<span class="ansi-green-intense-fg ansi-bold">    620</span>
+<span class="ansi-green-intense-fg ansi-bold">    621</span>         <span class="ansi-red-fg"># Send the request</span>
+<span class="ansi-green-fg">--&gt; 622</span><span class="ansi-red-fg">         </span>r <span class="ansi-blue-fg">=</span> adapter<span class="ansi-blue-fg">.</span>send<span class="ansi-blue-fg">(</span>request<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">**</span>kwargs<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    623</span>
+<span class="ansi-green-intense-fg ansi-bold">    624</span>         <span class="ansi-red-fg"># Total elapsed time of the request (approximately)</span>
+
+<span class="ansi-green-fg">~/.conda/envs/birdy/lib/python3.6/site-packages/requests/adapters.py</span> in <span class="ansi-cyan-fg">send</span><span class="ansi-blue-fg">(self, request, stream, timeout, verify, cert, proxies)</span>
+<span class="ansi-green-intense-fg ansi-bold">    493</span>
+<span class="ansi-green-intense-fg ansi-bold">    494</span>         <span class="ansi-green-fg">except</span> <span class="ansi-blue-fg">(</span>ProtocolError<span class="ansi-blue-fg">,</span> socket<span class="ansi-blue-fg">.</span>error<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 495</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> ConnectionError<span class="ansi-blue-fg">(</span>err<span class="ansi-blue-fg">,</span> request<span class="ansi-blue-fg">=</span>request<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    496</span>
+<span class="ansi-green-intense-fg ansi-bold">    497</span>         <span class="ansi-green-fg">except</span> MaxRetryError <span class="ansi-green-fg">as</span> e<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">ConnectionError</span>: (&#39;Connection aborted.&#39;, ConnectionResetError(104, &#39;Connection reset by peer&#39;))
+</pre></div></div>
+</div>
+<p>Since we requested output objects, we can simply access the output objects. The dianostics is just a CSV file:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">diagnostics</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">hydrograph</span></code> and <code class="docutils literal notranslate"><span class="pre">storage</span></code> outputs are netCDF files storing the time series. These files are opened by default using <code class="docutils literal notranslate"><span class="pre">xarray</span></code>, which provides convenient and powerful time series analysis and plotting tools.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">hydrograph</span><span class="o">.</span><span class="n">q_sim</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">hydrograph</span><span class="o">.</span><span class="n">q_sim</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max: &quot;</span><span class="p">,</span> <span class="n">hydrograph</span><span class="o">.</span><span class="n">q_sim</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mean: &quot;</span><span class="p">,</span> <span class="n">hydrograph</span><span class="o">.</span><span class="n">q_sim</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Monthly means: &quot;</span><span class="p">,</span> <span class="n">hydrograph</span><span class="o">.</span><span class="n">q_sim</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;time.month&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/birdhouse_logo.svg" alt="Logo"/>
+            </a></p>
+<h1 class="logo"><a href="../../index.html">Raven</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting_started.html">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Notebooks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../processes.html">Processes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changes.html">Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../configuration.html">Configuration</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, David Huard.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../../_sources/notebooks/.ipynb_checkpoints/running_gr4jcn-checkpoint.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
